@@ -1,5 +1,6 @@
 import os
 import bot_commands as commands
+from telebot import types
 
 bot = commands.bot
 
@@ -24,11 +25,16 @@ INFO = '''
 /info - информация о боте
 '''
 
+welcome_info = '''
+Я ваш персональныый менеджер задач, вы можете добавить, удалить или обновить Ваш список дел!
+'''
 
 @bot.message_handler(commands=['start'])
 def start_handler(message):
     user_id = message.from_user.id
-    bot.send_message(user_id, f'Добро пожаловать, {message.from_user.first_name}')
+    bot.send_message(user_id, f'Добро пожаловать, {message.from_user.first_name}.')
+    bot.send_message(user_id, welcome_info)
+    bot.send_message(user_id, INFO)
     task_dir = f'TODO/{user_id}'
     if not os.path.exists(f'TODO/{user_id}'):
         # отсылаем информацию пользователю о боте, если то ещё не был идентифицирован
@@ -44,7 +50,7 @@ def info_handler(message):
     bot.send_message(message.from_user.id, INFO)
 
 
-@bot.message_handler(commands=COMMAND_MAP.keys())
+@bot.message_handler(commands=COMMAND_MAP.keys()) # type: ignore
 def commands_handler(message):
     user_id = message.from_user.id
     if os.path.exists(f'TODO/{user_id}'):

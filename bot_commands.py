@@ -76,6 +76,7 @@ def delete_item(user_id, item_id):
                 found = True
                 print('Yes inp')
             else:
+                print(new_data)
                 new_data.append(row)
                 print(new_data)
 
@@ -91,4 +92,16 @@ def delete_item(user_id, item_id):
 
 
 def refresh_tasks(user_id): # update number ls
-    pass
+    new_data = []
+
+    with open('tasks.csv', 'r', newline='') as inp:
+        for i, row, in enumerate(csv.DictReader(inp)):
+            row['id'] = i
+            new_data.append(row)
+            print('This is 101 ROW - ', row, new_data)
+    
+    with open('tasks.csv', 'w', newline='') as out:
+        writer = csv.DictWriter(out, fieldnames=('id', 'discription'))
+        writer.writeheader()
+        writer.writerows(new_data)
+    bot.send_message(user_id, f'Номера ваших задач обновлены!')
